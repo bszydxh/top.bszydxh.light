@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/moral"
+        android:icon="@drawable/ic_baseline_control_camera_24"
+        android:title="@string/control"/>
+    <item
+        android:id="@+id/run_errands"
+        android:icon="@drawable/ic_baseline_construction_24"
+        android:title="@string/config"/>
+
+
+</menu>

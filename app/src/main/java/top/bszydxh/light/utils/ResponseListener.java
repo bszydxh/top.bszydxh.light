@@ -43,7 +43,7 @@ public class ResponseListener extends Thread {
                     socket.bind(new InetSocketAddress(port));
                 }
                 //监听回送端口
-                byte[] buf = new byte[10240];
+                byte[] buf = new byte[1024000];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 //拿数据
                 socket.receive(packet);
@@ -59,10 +59,10 @@ public class ResponseListener extends Thread {
                         dataBackListener.onDataBack(msg, ip);
                     });
                 }
-                Thread.sleep(100);
+                Thread.sleep(5);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.i("udp", "fail");
+                Log.e("udp", "fail");
             }
 
         }

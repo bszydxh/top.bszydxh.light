@@ -27,7 +27,7 @@ public class ConfigFragment extends Fragment {
         binding.lightButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dark_gray));
         binding.lightButton.setOnClickListener(v -> {
             new Thread(() -> {
-                Log.e("udp", "send start");
+                Log.d("udp", "send start");
                 try {
                     String ssid = binding.ssid.getText().toString();
                     String pwd = binding.pwd.getText().toString();
@@ -40,12 +40,12 @@ public class ConfigFragment extends Fragment {
                             objectMapper.writeValueAsString(configRequestDTO)
                     );
                 } catch (Exception e) {
-                    Log.i("udp", "send error");
+                    Log.e("udp", "send error");
                 }
             }).start();
         });
         new Thread(() -> {
-            Log.i("udp", "send start");
+            Log.d("udp", "send start");
             while (true) {
                 StateResponseDTO stateResponseDTO = SettingDao.getStateData(requireContext());
                 if (stateResponseDTO.getState() == -1) {
@@ -64,7 +64,7 @@ public class ConfigFragment extends Fragment {
                 try {
                     Thread.sleep(1000);
                 } catch (Exception e) {
-                    Log.i("udp", "thread stop");
+                    Log.d("udp", "thread stop");
                     break;
                 }
             }

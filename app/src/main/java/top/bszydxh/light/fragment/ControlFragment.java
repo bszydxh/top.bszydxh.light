@@ -39,7 +39,7 @@ public class ControlFragment extends Fragment {
                 InetAddress groupAddress = InetAddress.getByName(SettingDao.getAddress(requireContext()));
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, groupAddress, 1145);
                 socket.send(packet);
-                Log.w("udp", str + "->" + SettingDao.getAddress(requireContext()) + ":1145");
+                Log.d("udp", str + "->" + SettingDao.getAddress(requireContext()) + ":1145");
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e("udp", str + "-/>" + SettingDao.getAddress(requireContext()) + ":error");
@@ -65,8 +65,8 @@ public class ControlFragment extends Fragment {
             Log.e("udp", "listen error");
         }
         new Thread(() -> {
-            Log.i("udp", "send start");
-            int sleep_time = 100;
+            Log.d("udp", "send start");
+            int sleep_time;
             while (true) {
                 synchronized (this) {
                     StateResponseDTO stateData = SettingDao.getStateData(requireContext());
@@ -97,7 +97,7 @@ public class ControlFragment extends Fragment {
                             sleep_time = 600;
                             break;
                         default:
-                            sleep_time = 100;
+                            sleep_time = 20;
                             sendMsg = "state";
                     }
 
@@ -105,10 +105,10 @@ public class ControlFragment extends Fragment {
                 try {
                     Thread.sleep(sleep_time);
                 } catch (Exception e) {
-                    Log.i("udp", "thread stop");
+                    Log.d("udp", "thread stop");
                     break;
                 }
-                Log.i("udp", "send ok");
+                Log.d("udp", "send ok");
                 if (System.currentTimeMillis() - lastConnectionTimestamp >= 3000) {
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(() -> {
@@ -154,13 +154,13 @@ public class ControlFragment extends Fragment {
             if (stateResponseDTO.getState() == 0) {
                 binding.light.setText("开灯");
                 binding.light.setOnClickListener(v -> {
-                    Log.w("turn", "turn_on");
+                    Log.d("turn", "turn_on");
                     setSendMsg("turn_on");
                 });
             } else if (stateResponseDTO.getState() == 1) {
                 binding.light.setText("关灯");
                 binding.light.setOnClickListener(v -> {
-                    Log.w("turn", "turn_off");
+                    Log.d("turn", "turn_off");
                     setSendMsg("turn_off");
                 });
             } else if (stateResponseDTO.getState() == -1) {
@@ -184,11 +184,13 @@ public class ControlFragment extends Fragment {
                     setSendMsg("normal_light");
                 });
             }
-            binding.textView.setText(String.format("%s\n%s\n%s\n%s\n",
-                    stateResponseDTO.getStr1(),
-                    stateResponseDTO.getStr2(),
-                    stateResponseDTO.getStr3(),
-                    stateResponseDTO.getStr4()));
+            if (stateResponseDTO.getStr1() != null) {
+                binding.textView.setText(String.format("%s\n%s\n%s\n%s\n",
+                        stateResponseDTO.getStr1(),
+                        stateResponseDTO.getStr2(),
+                        stateResponseDTO.getStr3(),
+                        stateResponseDTO.getStr4()));
+            }
             SettingDao.setAddress(ControlFragment.this.requireContext(), ip);
         };
         responseListener.setDataBackListener(dataBackListener);
